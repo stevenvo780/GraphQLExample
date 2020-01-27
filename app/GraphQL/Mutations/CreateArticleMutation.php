@@ -10,9 +10,9 @@ use GraphQL\Type\Definition\Type;
 use Rebing\GraphQL\Support\Mutation;
 use Rebing\GraphQL\Support\SelectFields;
 use GraphQl;
-use App\User;
+use App\Article;
 
-class CreateUserMutation extends Mutation
+class CreateArticleMutation extends Mutation
 {
     protected $attributes = [
         'name' => 'users',
@@ -21,15 +21,15 @@ class CreateUserMutation extends Mutation
 
     public function type(): Type
     {
-        return Type::listOf(GraphQL::type('user'));
+        return Type::listOf(GraphQL::type('article'));
     }
 
     public function args(): array
     {
         return [
-            'name' => ['name' => 'name', 'type' => Type::string()],
-            'email' => ['name' => 'email', 'type' => Type::string()],
-            'password' => ['name' => 'password', 'type' => Type::string()],
+            'title' => ['name' => 'title', 'type' => Type::string()],
+            'content' => ['name' => 'content', 'type' => Type::string()],
+            'user_id' => ['name' => 'user_id', 'type' => Type::int()],
         ];
     }
 
@@ -37,33 +37,31 @@ class CreateUserMutation extends Mutation
     protected function rules(array $args = []): array
     { 
         return [
-            'email' => ['required'],
-            'name' => ['required'],
-            'password' => ['required']
+            'title' => ['required'],
+            'content' => ['required'],
+            'user_id' => ['required']
         ];
     }
-    
-    
     
     public function resolve($root, $args, $context, ResolveInfo $resolveInfo, Closure $getSelectFields)
     {
  
-        $user = new User();
-        $user->name = $args['name'];
-        $user->email = $args['email'];
-        $user->password = bcrypt($args['password']);
+        $article = new Article();
+        $article->title = $args['title'];
+        $article->content = $args['content'];
+        $article->user_id = $args['user_id'];
         try {
-            $user->save();
+            $article->save();
                     
-            if (isset($user->id)) {
-                return User::where('id' , $user->id)->get();
+            if (isset($article->id)) {
+                return Article::where('id' , $article->id)->get();
             } 
 
         } catch (\Throwable $th) {
             return [];
         }
         
-        return User::all();
+        return Article::all();
     
     }
 }

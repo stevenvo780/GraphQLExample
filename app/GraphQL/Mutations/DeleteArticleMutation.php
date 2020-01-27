@@ -10,13 +10,13 @@ use GraphQL\Type\Definition\Type;
 use Rebing\GraphQL\Support\Mutation;
 use Rebing\GraphQL\Support\SelectFields;
 use GraphQl;
-use App\User;
+use App\Article;
 
-class DeleteUserMutation extends Mutation
+class DeleteArticleMutation extends Mutation
 {
     protected $attributes = [
-        'name' => 'users',
-        'description' => 'Borra un usuario'
+        'name' => 'articles',
+        'description' => 'Borra un articulo'
     ];
 
     public function type(): Type
@@ -31,18 +31,21 @@ class DeleteUserMutation extends Mutation
         ];
     }
 
+    
     protected function rules(array $args = []): array
     { 
         return [
             'id' => ['required'],
-  
+          
         ];
     }
-
+    
     public function resolve($root, $args, $context, ResolveInfo $resolveInfo, Closure $getSelectFields)
     {
-        $user = User::findOrFail($args['id']);
+ 
+        $user = Article::findOrFail($args['id']);
   
         return  $user->delete() ? true : false;
+    
     }
 }

@@ -10,55 +10,56 @@ use GraphQL\Type\Definition\Type;
 use Rebing\GraphQL\Support\Mutation;
 use Rebing\GraphQL\Support\SelectFields;
 use GraphQl;
-use App\User;
+use App\Article;
 
-class UpdateUserMutation extends Mutation
+class UpdateArticleMutation extends Mutation
 {
     protected $attributes = [
-        'name' => 'users',
-        'description' => 'Actualiza un usuario'
+        'name' => 'articles',
+        'description' => 'Crea un articulo'
     ];
 
     public function type(): Type
     {
-        return Type::listOf(GraphQL::type('user'));
+        return Type::listOf(GraphQL::type('article'));
     }
 
     public function args(): array
     {
         return [
             'id' => ['name' => 'id', 'type' => Type::int()],
-            'name' => ['name' => 'name', 'type' => Type::string()],
-            'email' => ['name' => 'email', 'type' => Type::string()],
-            'password' => ['name' => 'password', 'type' => Type::string()],
+            'title' => ['name' => 'title', 'type' => Type::string()],
+            'content' => ['name' => 'content', 'type' => Type::string()],
+            'user_id' => ['name' => 'user_id', 'type' => Type::int()],
         ];
     }
 
+    
     protected function rules(array $args = []): array
     { 
         return [
             'id' => ['required'],
-            'email' => ['required'],
-            'name' => ['required'],
-            'password' => ['required']
+            'title' => ['required'],
+            'content' => ['required'],
+            'user_id' => ['required']
         ];
     }
-
+    
     public function resolve($root, $args, $context, ResolveInfo $resolveInfo, Closure $getSelectFields)
     {
-        
+ 
         if (isset($args['id'])) {
-            $user = User::where('id' , $args['id'])->get();
+            $article = Article::where('id' , $args['id'])->get();
            
-            if ($user)
+            if ($article)
             {
-                $user = User::findOrFail($args['id']);
-                $user->fill($args);
+                $article = Article::findOrFail($args['id']);
+                $article->fill($args);
                 
                 try {
-                    $user->save();
-                    if (isset($user->id)) {
-                        return User::where('id' , $user->id)->get();
+                    $article->save();
+                    if (isset($article->id)) {
+                        return Article::where('id' , $article->id)->get();
                     } 
         
                 } catch (\Throwable $th) {
@@ -68,6 +69,7 @@ class UpdateUserMutation extends Mutation
            
         } 
 
-        return User::all();
+        return Article::all();
+    
     }
 }
