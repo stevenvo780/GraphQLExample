@@ -2,8 +2,8 @@
 
 <h1>Documentacion</h1>
 
-<a>https://fostermade.co/blog/getting-started-with-graphql-in-laravel</a>
-<a>https://github.com/rebing/graphql-laravel</a>
+https://fostermade.co/blog/getting-started-with-graphql-in-laravel
+https://github.com/rebing/graphql-laravel
 
 
 
